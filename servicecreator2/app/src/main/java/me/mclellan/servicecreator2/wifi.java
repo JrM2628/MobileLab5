@@ -19,7 +19,7 @@ public class wifi extends Service {
     private static WifiInfo wi;
     static final int MSG_GET_SSID = 1;
 
-
+    //Handler stuff to handle incoming messages
     class IncomingHandler extends Handler {
         private Context applicationContext;
 
@@ -44,19 +44,16 @@ public class wifi extends Service {
     }
     final Messenger mMessenger = new Messenger(new IncomingHandler());
 
-
-
+    // Default constructor
     public wifi() {
     }
 
+
     @Override
+    // Creates WiFiManager and WiFi connection info objects
     public int onStartCommand(Intent intent, int flags, int startId){
         this.wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         this.wi  = this.wm.getConnectionInfo();
-
-        //String ssid = this.wi.getSSID();
-        //Toast.makeText(this, ssid, Toast.LENGTH_LONG).show();
-
         return Service.START_NOT_STICKY;
     }
 
@@ -65,6 +62,7 @@ public class wifi extends Service {
     }
 
     @Override
+    // Returns binder
     public IBinder onBind(Intent intent) {
         return mMessenger.getBinder();
     }
