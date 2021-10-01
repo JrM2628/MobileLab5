@@ -1,6 +1,7 @@
 package me.mclellan.servicecreator2;
 
 import android.annotation.SuppressLint;
+import android.app.IntentService;
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -15,12 +16,11 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
-import android.util.Log;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import androidx.annotation.Nullable;
 
-public class wifi extends Service {
+
+public class wifi extends IntentService {
     private static WifiManager wm;
     private static WifiInfo wi;
     private static ContentResolver contentResolver;
@@ -85,6 +85,7 @@ public class wifi extends Service {
 
     // Default constructor
     public wifi() {
+        super("wifi");
     }
 
 
@@ -93,8 +94,10 @@ public class wifi extends Service {
     public int onStartCommand(Intent intent, int flags, int startId){
         wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         wi  = wm.getConnectionInfo();
+        //return super.onStartCommand(intent, flags, startId);
         return Service.START_NOT_STICKY;
     }
+
 
     public void onCreate(){
         return;
@@ -104,5 +107,12 @@ public class wifi extends Service {
     // Returns binder
     public IBinder onBind(Intent intent) {
         return mMessenger.getBinder();
+    }
+
+    @Override
+    protected void onHandleIntent(@Nullable Intent intent) {
+        wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wi  = wm.getConnectionInfo();
+        final Messenger mMessenger = new Messenger(new IncomingHandler());
     }
 }
